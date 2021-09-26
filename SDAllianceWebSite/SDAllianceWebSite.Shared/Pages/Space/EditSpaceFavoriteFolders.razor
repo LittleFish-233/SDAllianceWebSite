@@ -1,0 +1,34 @@
+﻿@page "/space/EditSpaceFavoriteFolders/{Id}"
+@attribute [Authorize]
+
+
+@inject HttpClient Http
+@inject ToastService? ToastService
+
+@inject NavigationManager NavigationManager
+
+<Title Text="SDAlliance_软萌"></Title>
+
+
+<div class="">
+    <EditFavoriteFoldersTip Id="@Id" Title="管理收藏夹列表" OnClickUrl="OnClickUrl" Uri="@(ToolHelper.Base64EncodeUrl( NavigationManager.Uri))"></EditFavoriteFoldersTip>
+</div>
+
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+
+    public async void OnClickUrl(NavigateModel model)
+    {
+        try
+        {
+            NavigationManager.NavigateTo(model.Url, model.Title, model.Icon);
+        }
+        catch
+        {
+            await ToastService.Error("导航失败", "请尝试刷新页面");
+        }
+    }
+}

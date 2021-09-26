@@ -1,0 +1,116 @@
+﻿@inject HttpClient Http
+@inject ToastService? ToastService
+@inject NavigationManager NavigationManager
+@using System.Text.Json
+
+<div class=" ps-4 pe-4 pt-3 pb-3 mb-3 @(IsChild ? "comment-layout-child" : "comment-layout")  comment-layout-transition div-shadow rounded  bg-opacity"  style="cursor:default">
+    <div class="new-row-warp no-margin">
+        <AuthorizeView>
+            <Authorized>
+                <div>
+                    @{string image = null;
+                        foreach (var item in context.User.Claims)
+                        {
+                            if (item.Type == "image")
+                            {
+                                image = item.Value;
+                            }
+                        } }
+                    <img class=" shadow -sm" src="@(image ?? ToolHelper.WebApiPath + "images/user.png")"
+                         style="height: 60px;width: 60px;border-radius: 50%;" />
+                </div>
+                <div class="comment-tx-div">
+                    <div class="new-row-warp no-margin">
+                        <div class="comment-username">@context.User.Identity.Name</div>
+                        @if (string.IsNullOrWhiteSpace(CurrentUserRank) == false)
+                        {
+                            string[] temp = CurrentUserRank.Split(",");
+                            foreach (var item in temp)
+                            {
+    <div class="comment-tag">@item</div>}
+                        }
+                    </div>
+                    <div class="comment-time">@DateTime.Now.ToCstTime().ToString("yyyy-MM-dd H:dd")</div>
+                </div>
+                <Textarea class="col-12 mt-3 comment-rely-textarea" style="height: 120px; width: 100%;" placeholder="还不快点说点什么呀~" @bind-Value="@Text"></Textarea>
+
+                <div class="col-12 no-padding mt-2">
+                    <button class="comment-reply-layout-btn comment-reply-layout-btn-color" @onclick="OnComment">发表评论</button>
+                </div>
+            </Authorized>
+            <NotAuthorized>
+                <div class="col-12 no-padding mt-2">
+                    <button class="comment-reply-layout-btn comment-reply-layout-btn-color" @onclick="OnLoginClick">登入后发表评论</button>
+                </div>
+            </NotAuthorized>
+        </AuthorizeView>
+
+    </div>
+
+</div>
+@code {
+
+    [Parameter]
+    public bool IsChild { get; set; }
+
+    [Parameter]
+    public string CurrentUserRank { get; set; }
+
+    [Parameter]
+    public bool IsAdmin { get; set; }
+
+    [Parameter]
+    public CommentType Type { get; set; }
+
+    [Parameter]
+    public string ObjectId { get; set; }
+
+    [Parameter]
+    public EventCallback RelyCallBack { get; set; }
+
+    protected override bool ShouldRender() => false;
+
+    public string Text { get; set; }
+
+    public async void OnComment()
+    {
+        //上传
+        try
+        {
+            if (string.IsNullOrWhiteSpace(Text))
+            {
+                await ToastService.Error("发表评论失败", "你还什么都没说呢，我们不能发表空的评论哦");
+                return;
+            }
+            var result = await Http.PostAsJsonAsync<PublishCommentModel>(ToolHelper.WebApiPath + "api/comments/PublishComment", new PublishCommentModel { ObjectId = ObjectId, Text = Text, Type = Type });
+            string jsonContent = result.Content.ReadAsStringAsync().Result;
+            Result obj = JsonSerializer.Deserialize<Result>(jsonContent, ToolHelper.options);
+            //判断结果
+            if (obj.Successful == false)
+            {
+                await ToastService.Error("发表评论失败", obj.Error);
+            }
+            else
+            {
+                if(IsAdmin)
+                {
+                    await ToastService.Success("发表评论成功", "发表评论成功");
+                }
+                else
+                {
+                    await ToastService.Information("回复成功~评论将会在审核后发布", "回复成功~评论将会在审核后发布");
+                }
+
+                await RelyCallBack.InvokeAsync();
+            }
+        }
+        catch
+        {
+            await ToastService.Error("发表评论失败", "发生了未预料的异常，请联系开发人员");
+        }
+    }
+    public void OnLoginClick()
+    {
+        NavigationManager.NavigateTo("/account/login/"+ ToolHelper.Base64EncodeUrl(NavigationManager.Uri));
+    }
+}

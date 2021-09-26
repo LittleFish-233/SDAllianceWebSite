@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  sdalliancewebsite.apiserver:
+    image: ${DOCKER_REGISTRY-}sdalliancewebsiteapiserver
+    build:
+      context: .
+      dockerfile: SDAllianceWebSite/SDAllianceWebSite.APIServer/Dockerfile
+
+  sdalliancewebsite.server:
+    image: ${DOCKER_REGISTRY-}sdalliancewebsiteserver
+    build:
+      context: .
+      dockerfile: SDAllianceWebSite/SDAllianceWebSite.Server/Dockerfile
+

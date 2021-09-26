@@ -1,0 +1,50 @@
+﻿@page "/admin/tools"
+@attribute [Authorize(Roles = "Admin")]
+
+@inject HttpClient Http
+@inject IRoleService _roleService
+@inject ToastService? ToastService
+@inject NavigationManager NavigationManager
+
+
+<Title Text="SDAlliance_软萌"></Title>
+
+<div class="">
+    <div class="row">
+       
+        <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-4 pb-3">
+            <AdminToolTip Title="执行临时脚本" OnToolClick="OnGetSteamImage"
+                          BriefIntroduction="将会执行预设置好的临时脚本">
+            </AdminToolTip>
+        </div>
+    </div>
+
+</div>
+@code {
+
+
+   
+    public async Task OnGetSteamImage()
+    {
+        //上传
+        try
+        {
+            await ToastService.Success("正在执行临时脚本", "任务执行需要一定时间，请稍安勿躁");
+            var obj = await Http.GetFromJsonAsync<Result>(ToolHelper.WebApiPath + "api/admin/TempFunction");
+            //判断结果
+            if (obj.Successful == false)
+            {
+                await ToastService.Error("执行临时脚本失败", obj.Error);
+            }
+            else
+            {
+                await ToastService.Success("成功执行临时脚本", "成功执行临时脚本");
+            }
+        }
+        catch
+        {
+            await ToastService.Error("执行临时脚本失败", "发生了未预料的异常，请联系开发人员");
+        }
+    }
+}
+

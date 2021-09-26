@@ -1,0 +1,138 @@
+﻿@page "/account/changeemail/{*ReturnUrl}"
+@attribute [Authorize]
+
+@inject HttpClient Http
+@inject ExamineService _examineService
+@inject ILocalStorageService _localStorage
+@inject ToastService? ToastService
+@inject IAppHelper _appHelper
+@inject NavigationManager NavigationManager
+
+
+
+<Title Text="SDAlliance_软萌"></Title>
+
+@if (isReady == false)
+{
+    <SecondAuthenticationCheckTip ReturnUrl="@ReturnUrl" OnPassed="OnPassed"></SecondAuthenticationCheckTip>
+}
+else
+{
+    if (state == "输入新邮箱")
+    {<div class="rounded   rounded shadow  bg-opacity  p-3">
+            <h2 class="mb-4 text-center">请输入新邮箱</h2>
+            <ValidateForm Model="@ModelBefore" OnValidSubmit="ConfirmEmailBefore" ValidateAllProperties="true" class="form-group  mb-0">
+
+                <div class="row">
+                    <div class="form-group col-12  col-sm-12">
+                        <BootstrapInput @bind-Value="ModelBefore.NewEmail" type="email" />
+                    </div>
+                    <div class="form-group col-12">
+                        <Button Color="Color.Primary" ButtonType="ButtonType.Submit" IsAsync="true" style="width:100%">确定</Button>
+                    </div>
+
+                </div>
+            </ValidateForm>
+        </div>
+    }
+    else if (state == "验证新邮箱")
+    {
+        <div class="rounded   rounded shadow  bg-opacity  p-3">
+            <h2 class="mb-4 text-center">验证电子邮箱</h2>
+            <h5 class="mb-4">我们已经向<strong>@(ModelBefore.NewEmail)</strong>发送了一封验证邮件，请在下方填写其中的验证码。如果没有在收件箱找到邮件，请检查垃圾箱。</h5>
+            <ValidateForm Model="@ModelAfter" OnValidSubmit="ConfirmEmailAfter" ValidateAllProperties="true" class="form-group mt-4  mb-0">
+
+                <div class="row">
+                    <div class="form-group col">
+                        <BootstrapInput @bind-Value="ModelAfter.NumToken" />
+                    </div>
+                    <div class="form-group col-auto" style=" display: flex; align-items: flex-end;">
+                        <PostVerificationCodeTip Email="@ModelBefore.NewEmail"></PostVerificationCodeTip>
+                    </div>
+                    <div class="form-group col-12">
+                        <Button Color="Color.Primary" ButtonType="ButtonType.Submit" IsAsync="true" style="width:100%">验证</Button>
+                    </div>
+
+                </div>
+            </ValidateForm>
+        </div>
+    }
+}
+
+
+
+
+@code {
+
+    [Parameter]
+    public string ReturnUrl { get; set; }
+
+    private ChangeEmailBeforeModel ModelBefore = new ChangeEmailBeforeModel();
+    private ChangeEmailAfterModel ModelAfter = new ChangeEmailAfterModel();
+    string state = "输入新邮箱";
+    bool isReady = false;
+   
+
+    private Task OnPassed()
+    {
+        isReady = true;
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    private async Task ConfirmEmailBefore(EditContext context)
+    {
+        if (string.IsNullOrWhiteSpace(ModelBefore.NewEmail))
+        {
+            await ToastService.Error("请输入邮箱", "请输入邮箱");
+            return;
+        }
+        try
+        {
+            ModelBefore.LoginKey = ToolHelper.LoginKey;
+            var result = await Http.PostAsJsonAsync<ChangeEmailBeforeModel>(ToolHelper.WebApiPath + "api/account/ChangeEmailBefore", ModelBefore);
+            string jsonContent = result.Content.ReadAsStringAsync().Result;
+            Result obj = JsonSerializer.Deserialize<Result>(jsonContent, ToolHelper.options);
+            //判断结果
+            if (obj.Successful == false)
+            {
+                await ToastService.Error("修改电子邮箱失败", obj.Error);
+            }
+            else
+            {
+                state = "验证新邮箱";
+                StateHasChanged();
+            }
+        }
+        catch
+        {
+            await ToastService.Error("验证旧邮箱失败", "发生了未预料的异常，请联系开发人员");
+        }
+    }
+    private async Task ConfirmEmailAfter(EditContext context)
+    {
+        try
+        {
+            ModelAfter.LoginKey = ToolHelper.LoginKey;
+            ModelAfter.NewEmail = ModelBefore.NewEmail;
+
+            var result = await Http.PostAsJsonAsync<ChangeEmailAfterModel>(ToolHelper.WebApiPath + "api/account/ChangeEmailAfter", ModelAfter);
+            string jsonContent = result.Content.ReadAsStringAsync().Result;
+            Result obj = JsonSerializer.Deserialize<Result>(jsonContent, ToolHelper.options);
+            //判断结果
+            if (obj.Successful == false)
+            {
+                await ToastService.Error("验证新邮箱失败", obj.Error);
+            }
+            else
+            {
+                await ToastService.Success("修改邮箱成功", "修改邮箱成功");
+                NavigationManager.NavigateTo(string.IsNullOrWhiteSpace(ReturnUrl) ? "/" : ToolHelper.Base64DecodeUrl(ReturnUrl));
+            }
+        }
+        catch
+        {
+            await ToastService.Error("验证新邮箱失败", "发生了未预料的异常，请联系开发人员");
+        }
+    }
+}

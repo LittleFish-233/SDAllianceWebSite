@@ -1,0 +1,16 @@
+﻿{
+  "name": "软件开发联盟",
+  "short_name": "软件开发联盟",
+  "description": "软件开发联盟的建站目的是收集,索引国产galgame资料、文章、攻略，为国产galgame同好们提供方便",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FFFFFF",
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

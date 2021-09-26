@@ -1,0 +1,211 @@
+﻿@inject HttpClient Http
+@inject SwalService SwalService
+@inject ILocalStorageService _localStorage
+@inject ToastService? ToastService
+@inject IAppHelper _appHelper
+@inject NavigationManager NavigationManager
+@inject IAuthService AuthService
+
+@inject IJSRuntime JS
+
+@if (isReady==false)
+{
+    <AccountWaitingTip Title="正在验证身份" Subtitle="你正在使用第三方账户登入，我们正在检查以确保一切正常"></AccountWaitingTip>
+}
+else
+{
+    @if (isLogin == false)
+    {
+        <UserOnlineCheckTip ReturnUrl="@ReturnUrl" OnPassed="OnLogin" Title="绑定到账户" Subtitle="请登入或创建一个账户，成功后我们将会绑定到你登入的账户上"></UserOnlineCheckTip>
+    }
+    else
+    {
+        if (isPassed == false)
+        {
+            <SecondAuthenticationCheckTip ReturnUrl="@ReturnUrl" OnPassed="OnPassed" IsOnPhone="false"></SecondAuthenticationCheckTip>
+        }
+        else
+        {
+            <AccountWaitingTip Title="正在验证身份" Subtitle="你正在使用第三方账户登入，我们正在检查以确保一切正常"></AccountWaitingTip>
+        }
+    }
+}
+
+
+@code {
+    [Parameter]
+    public string ReturnUrl { get; set; }
+    [Parameter]
+    public ThirdPartyLoginType Type { get; set; }
+    [Parameter]
+    public string Code { get; set; }
+
+    private ChangeUserPasswordModel Model = new ChangeUserPasswordModel();
+
+    bool isPassed = false;
+
+    bool isLogin = false;
+
+    bool isReady = false;
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (firstRender)
+        {
+            try
+            {
+                //检查是否完成第一步 验证code
+                if (ToolHelper.ThirdPartyLoginTempModel != null)
+                {
+                    isReady = true;
+                    StateHasChanged();
+                    return;
+                }
+                //检查参数是否合法
+                if (string.IsNullOrWhiteSpace(Code) || string.IsNullOrWhiteSpace(ReturnUrl))
+                {
+                    /* await SwalService.ShowModal(new SwalOption()
+                     {
+                         IsConfirm = true,
+                         Category = SwalCategory.Error,
+                         Title = "第三方登入失败",
+                         Content = "[Code:303] 回调链接不正确，请联系管理员"
+                     });*/
+                    NavigationManager.NavigateTo("/home");
+                    return;
+                }
+
+                //检查三方登入是否通过 检查是否已经绑定到某个用户
+
+                var result = await Http.PostAsJsonAsync<ThirdPartyLoginModel>(ToolHelper.WebApiPath + "api/account/ThirdPartyLogin", new ThirdPartyLoginModel { Code = Code, Type = Type, ReturnUrl = ToolHelper.GetThirdPartyCallbackUrl(Type), IsSSR = ToolHelper.IsSSR });
+                string jsonContent = result.Content.ReadAsStringAsync().Result;
+                ThirdPartyLoginResult obj = JsonSerializer.Deserialize<ThirdPartyLoginResult>(jsonContent, ToolHelper.options);
+                //判断结果
+                switch (obj.Code)
+                {
+                    case ThirdPartyLoginResultType.Failed:
+                        /* await SwalService.ShowModal(new SwalOption()
+                         {
+                             IsConfirm = true,
+                             Category = SwalCategory.Error,
+                             Title = "尝试验证身份失败",
+                             Content = "[Code:304] 无法连接到服务器，请确保网络正常后联系开发人员"
+                         });*/
+                        NavigationManager.NavigateTo(string.IsNullOrWhiteSpace(ReturnUrl) ? "/" : ToolHelper.Base64DecodeUrl(ReturnUrl));
+                        return;
+                    case ThirdPartyLoginResultType.LoginSuccessed:
+
+                        //判断当前是否已经登入账户 如果已经登入 则代表正在修改 但是成功登返回代表已经被绑定
+                        /* var authState = await authenticationStateTask;
+                         var user = authState.User;
+                         if(user.Identity.IsAuthenticated)
+                         {
+                             await SwalService.ShowModal(new SwalOption()
+                             {
+                                 IsConfirm = true,
+                                 Category = SwalCategory.Error,
+                                 Title = "绑定第三方账号失败",
+                                 Content = "该账号已经被绑定"
+                             });
+                         }
+                         else
+                         {*/
+                        if (await AuthService.Login(obj.Token) == false)
+                        {
+                            await ToastService.Success("出现一个错误", "第三方登入验证成功，但是尝试登入失败");
+                        }
+                        await AuthService.Refresh();
+                        NavigationManager.NavigateTo(string.IsNullOrWhiteSpace(ReturnUrl) ? "/" : ToolHelper.Base64DecodeUrl(ReturnUrl));
+                        return;
+
+                    case ThirdPartyLoginResultType.NoAssociatedAccount:
+                        //继续后续步骤
+                        ToolHelper.ThirdPartyLoginTempModel = new ThirdPartyLoginTempModel
+                        {
+                            ThirdLoginKey = obj.ThirdLoginKey,
+                            Type = Type
+                        };
+                        isReady = true;
+                        StateHasChanged();
+                        break;
+                }
+            }
+            catch (Exception exc)
+            {
+                /* await SwalService.ShowModal(new SwalOption()
+                 {
+                     IsConfirm = true,
+                     Category = SwalCategory.Error,
+                     Title = "尝试验证身份失败",
+                     Content = "[Code:305]<" + exc.Message + "> 无法连接到服务器，请确保网络正常后联系开发人员"
+                 });*/
+                NavigationManager.NavigateTo(string.IsNullOrWhiteSpace(ReturnUrl) ? "/" : ToolHelper.Base64DecodeUrl(ReturnUrl));
+            }
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+
+    private Task OnLogin()
+    {
+        isLogin = true;
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    private async Task OnPassed()
+    {
+        isPassed = true;
+        StateHasChanged();
+        await AddThirdPartyLogin();
+    }
+
+    private async Task AddThirdPartyLogin()
+    {
+        try
+        {
+
+            var result = await Http.PostAsJsonAsync<AddThirdPartyLoginInforModel>(ToolHelper.WebApiPath + "api/account/AddThirdPartyLoginInfor", new AddThirdPartyLoginInforModel { ThirdPartyKey = ToolHelper.ThirdPartyLoginTempModel.ThirdLoginKey,LoginKey=ToolHelper.LoginKey, Type = ToolHelper.ThirdPartyLoginTempModel.Type });
+            string jsonContent = result.Content.ReadAsStringAsync().Result;
+            Result obj = JsonSerializer.Deserialize<Result>(jsonContent, ToolHelper.options);
+            //判断结果
+            if (obj.Successful == false)
+            {
+                await SwalService.ShowModal(new SwalOption()
+                {
+                    IsConfirm = true,
+                    Category = SwalCategory.Error,
+                    Title = "添加第三方登入失败",
+                    Content = obj.Error
+                }) ;
+                NavigationManager.NavigateTo(string.IsNullOrWhiteSpace(ReturnUrl) ? "/" : ToolHelper.Base64DecodeUrl(ReturnUrl));
+            }
+            else
+            {
+                NavigationManager.NavigateTo(string.IsNullOrWhiteSpace(ReturnUrl) ? "/" : ToolHelper.Base64DecodeUrl(ReturnUrl));
+
+            }
+        }
+        catch
+        {
+            await SwalService.ShowModal(new SwalOption()
+            {
+                IsConfirm = true,
+                Category = SwalCategory.Error,
+                Title = "尝试验证身份失败",
+                Content = "[Code:306] 无法连接到服务器，请确保网络正常后联系开发人员"
+            });
+            NavigationManager.NavigateTo(string.IsNullOrWhiteSpace(ReturnUrl) ? "/" : ToolHelper.Base64DecodeUrl(ReturnUrl));
+        }
+    }
+
+}

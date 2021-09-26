@@ -1,0 +1,20 @@
+﻿@page "/space/editspacecomments/{Id}"
+@attribute [Authorize]
+
+
+@inject HttpClient Http
+@inject ToastService? ToastService
+
+
+<Title Text="SDAlliance_软萌"></Title>
+
+<div class="">
+        <EditSpaceCommentsTip Id="@Id" Title="管理空间留言" Type="CommentType.CommentUser"></EditSpaceCommentsTip>
+</div>
+
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+}

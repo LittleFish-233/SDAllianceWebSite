@@ -1,0 +1,277 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+@inject HttpClient Http
+@inject IAuthService _authService
+@inject IJSRuntime JS
+@inject ToastService? ToastService
+@inject ILocalStorageService _localStorage
+
+
+<StyleTip ColorString="@Theme" IsDark="IsDark" @ref="styleTip" IsOnMouse="IsOnMouse" IsOnBgImage="IsOnBgImage"></StyleTip>
+<ImagesLargeViewTip></ImagesLargeViewTip>
+
+<Layout SideWidth="0" IsPage="true" ShowGotoTop="false" ShowCollapseBar="true"
+        IsFullSide="@IsFullSide" IsFixedHeader="@IsFixedHeader" IsFixedFooter="@IsFixedFooter" ShowFooter="@ShowFooter"
+        Menus="@Menus" UseTabSet="@UseTabSet" TabItemTextDictionary="@TabItemTextDictionary" AdditionalAssemblies="new[] { GetType().Assembly }" class="@Theme">
+    <Header>
+        <span class="ms-3 flex-sm-fill d-none d-sm-block">软件开发联盟</span>
+        <div class="d-flex" style="align-items: center;">
+            @if (UnreadedMessages.Count > 0)
+            {
+                <DropdownWidget class="px-3 d-none d-sm-block" @onclick="OnClickMessage">
+                    <DropdownWidgetItem Icon="fa fa-envelope-o" ShowArrow="false" BadgeNumber="@(UnreadedMessages.Count.ToString())">
+                    </DropdownWidgetItem>
+                </DropdownWidget>
+            }
+
+
+            <AuthorizeView>
+                <Authorized>
+                    @foreach (var item in context.User.Claims)
+                    {
+                        if (item.Type == "image")
+                        {
+                            image = item.Value;
+                        }
+                        else if (item.Type == "userid")
+                        {
+                            userId = item.Value;
+                        }
+                    }
+                    @{userName = context.User.Identity.Name;}
+                    <img src="@(image??"_content/SDAllianceWebSite.Shared/images/user.png")" class="layout-avatar-right" />
+                    <TabLink Text="个人空间" Url="@("/space/index/"+userId)" Icon="fa fa-star-o" class="d-sm-block nav-link" style="color:white; word-wrap: break-word;word-break:break-all;">
+                        @context.User.Identity.Name
+                    </TabLink>
+                </Authorized>
+                <NotAuthorized>
+                    <img src="_content/SDAllianceWebSite.Shared/images/user.png" class="layout-avatar-right" />
+                    <TabLink Text="登入" Url="/account/login" Icon="fa fa-sign-in" class="nav-link" style="color:white">
+                        登入
+                    </TabLink>
+                </NotAuthorized>
+
+            </AuthorizeView>
+            <TabLink Text="搜索" Url="/home/search/全部" Icon="fa fa-search" class="layout-drawer" style="color: white; margin-right: 0px; height: 50px;">
+                <i class="fa fa-search"></i>
+            </TabLink>
+            <AuthorizeView>
+                <Authorized>
+                    <CreateWidgetTip></CreateWidgetTip>
+                </Authorized>
+            </AuthorizeView>
+            <div class="layout-drawer" @onclick="@(e => IsOpen = !IsOpen)" style=" height: 50px;"><i class="fa fa-gears"></i></div>
+
+        </div>
+
+    </Header>
+    <Side>
+        <TabLink class="layout-banner" Text="主页" Url="/" Icon="fa fa-home">
+            <img class="layout-logo" src="_content/SDAllianceWebSite.Shared/images/logo.png" />
+            <div class="layout-title">
+                <span>软件开发联盟</span>
+            </div>
+        </TabLink>
+
+        <div class="layout-user">
+            <AuthorizeView>
+                <Authorized>
+                    <img class="layout-avatar" src="@(image??"_content/SDAllianceWebSite.Shared/images/user.png")">
+                    <div class="layout-title">
+                        <TabLink Text="个人空间" Url="@("/space/index/"+userId)" Icon="fa fa-star-o" class="nav-link">
+                            @context.User.Identity.Name
+                        </TabLink>
+                    </div>
+                    <div class="layout-user-state"></div>
+                </Authorized>
+                <NotAuthorized>
+                    <img class="layout-avatar" src="_content/SDAllianceWebSite.Shared/images/user.png">
+                    <div class="layout-title">
+                        <TabLink Text="登入" Url="/account/login" Icon="fa fa-sign-in" class="nav-link" style="color:white">
+                            登入
+                        </TabLink>
+                    </div>
+                    <div class="layout-user-state"></div>
+                </NotAuthorized>
+            </AuthorizeView>
+
+        </div>
+    </Side>
+    <Main>
+        <CascadingValue Value="this" IsFixed="true">
+            @Body
+        </CascadingValue>
+    </Main>
+    <Footer>
+        <div class="text-center flex-fill p-1 d-wasm d-wasm-sm-block" style="color: #EBEEF5">
+            &copy; 2021 - 软件开发联盟 -&nbsp;<TabLink Text="关于" Url="/home/about" Icon="fa fa-bolt" style="color:white">关于</TabLink>
+            @if (IsNormalScreen == false && IsSmallScreen == false)
+            {
+        <a class="ms-4" target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=36079802000113" one-link-mark="yes" style="color:white">赣公网安备 36079802000113号</a>
+            }
+            <br />
+            <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank"><img alt="知识共享许可协议" style="border-width:0" src="_content/SDAllianceWebSite.Shared/images/CC4.png" /></a>
+            本站内容采用&nbsp;<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" style="color:white">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>&nbsp;进行许可。
+            @if (IsSmallScreen == false && IsNormalScreen == true)
+            {
+                <br />
+                <br />
+                <a class="ms-4" target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=36079802000113" one-link-mark="yes" style="color:white">赣公网安备 36079802000113号</a>
+            }
+            @if (IsSmallScreen == true && IsNormalScreen == false)
+            {
+                <br />
+                <a class="ms-4" target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=36079802000113" one-link-mark="yes" style="color:white">赣公网安备 36079802000113号</a>
+            }
+        </div>
+    </Footer>
+</Layout>
+
+<Drawer Placement="Placement.Right" @bind-IsOpen="@IsOpen" IsBackdrop="true" OnClickBackdrop="@(()=> { SaveTheme();return Task.CompletedTask; })">
+    <div class="layout-drawer-body">
+        <div class="btn btn-info-1 w-100" @onclick="@(e => { IsOpen = false; SaveTheme(); })">点击关闭</div>
+        <div class="page-layout-demo-option">
+            <p>布局调整</p>
+            <div class="row">
+                <div class="col-6">
+                    <div class="layout-item @(IsFullSide ? "active d-flex" : "d-flex")" @onclick="@(e => IsFullSide = true)" data-toggle="tooltip" title="左右结构">
+                        <div class="layout-left d-flex flex-column">
+                            <div class="layout-left-header"></div>
+                            <div class="layout-left-body flex-fill"></div>
+                        </div>
+                        <div class="layout-right d-flex flex-column flex-fill">
+                            <div class="layout-right-header"></div>
+                            <div class="layout-right-body flex-fill"></div>
+                            <div class="layout-right-footer"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="layout-item flex-column @(IsFullSide ? "d-flex" : "active d-flex")" @onclick="@(e => IsFullSide = false)" data-toggle="tooltip" title="上下结构">
+                        <div class="layout-top">
+                        </div>
+                        <div class="layout-body d-flex flex-fill">
+                            <div class="layout-left">
+                            </div>
+                            <div class="layout-right flex-fill">
+                            </div>
+                        </div>
+                        <div class="layout-footer">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-layout-demo-option">
+            <p>固定调整</p>
+            <div class="row">
+                <div class="col-6 d-flex align-items-center">
+                    <Switch @bind-Value="@IsFixedHeader" OnColor="@Color.Success" OffColor="@Color.Secondary"></Switch>
+                </div>
+                <div class="col-6 text-right">
+                    <span>固定页头</span>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-6 d-flex align-items-center">
+                    <Switch @bind-Value="@IsFixedFooter" OnColor="@Color.Success" OffColor="@Color.Secondary"></Switch>
+                </div>
+                <div class="col-6 text-right">
+                    <span>固定页脚</span>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-6 d-flex align-items-center">
+                    <Switch @bind-Value="@ShowFooter" OnColor="@Color.Success" OffColor="@Color.Primary"></Switch>
+                </div>
+                <div class="col-6 text-right">
+                    <span>显示页脚</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-layout-demo-option">
+            <p>主题配色</p>
+            <div class="row">
+                <div class="col-2">
+                    <span class="color color1" @onclick="@(e => Theme = "color1")"></span>
+                </div>
+                <div class="col-2">
+                    <span class="color color2" @onclick="@(e => Theme = "color2")"></span>
+                </div>
+                <div class="col-2">
+                    <span class="color color3" @onclick="@(e => Theme = "color3")"></span>
+                </div>
+                <div class="col-2">
+                    <span class="color color4" @onclick="@(e => Theme = "color4")"></span>
+                </div>
+                <div class="col-2">
+                    <span class="color color5" @onclick="@(e => Theme = "color5")"></span>
+                </div>
+                <div class="col-2">
+                    <span class="color color6" @onclick="@(e => Theme = "color6")"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-layout-demo-option">
+            <p>更多设置</p>
+            <div class="row">
+                <div class="col-6 d-flex align-items-center">
+                    <Switch @bind-Value="@UseTabSet" OnColor="@Color.Success" OffColor="@Color.Primary"></Switch>
+                </div>
+                <div class="col-6 text-right">
+                    <span>@(UseTabSet ? "多标签" : "单页")</span>
+                </div>
+
+            </div>
+            <div class="row mt-3">
+                <div class="col-6 d-flex align-items-center">
+                    <Switch @bind-Value="@IsDark" OnColor="@Color.Success" OffColor="@Color.Primary"></Switch>
+                </div>
+                <div class="col-6 text-right">
+                    <span>@(IsDark ? "深色" : "浅色")</span>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-6 d-flex align-items-center">
+                    <Switch @bind-Value="@IsOnMouse" OnColor="@Color.Success" OffColor="@Color.Secondary"></Switch>
+                </div>
+                <div class="col-6 text-right">
+                    <span>@(IsOnMouse ? "礼花" : "礼花")</span>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-6 d-flex align-items-center">
+                    <Switch @bind-Value="@IsOnBgImage" OnColor="@Color.Success" OffColor="@Color.Secondary"></Switch>
+                </div>
+                <div class="col-6 text-right">
+                    <span>@(IsOnBgImage ? "背景图" : "背景图")</span>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-6 d-flex align-items-center">
+                    <Switch @bind-Value="@IsDebug" OnColor="@Color.Success" OffColor="@Color.Secondary"></Switch>
+                </div>
+                <div class="col-6 text-right">
+                    <span>@(IsDebug ? "开发者工具" : "开发者工具")</span>
+                </div>
+            </div>
+
+        </div>
+        <AuthorizeView>
+            <Authorized>
+                <div class="btn btn-info-1 w-100 mt-3" @onclick="@(()=>Logout())">退出登入</div>
+            </Authorized>
+        </AuthorizeView>
+        <div class="btn btn-info-1 w-100 d-wasm mt-3" @onclick="@NavigateToWASM">切换客户端模式</div>
+        <div class="btn btn-info-1 w-100 d-ssr mt-3" @onclick="@NavigateToSSR">切换服务端模式</div>
+
+    </div>
+</Drawer>
+<Toast />
+<Dialog />
+<PopoverConfirm />
+<BootstrapBlazor.Components.Message />
+<SweetAlert />

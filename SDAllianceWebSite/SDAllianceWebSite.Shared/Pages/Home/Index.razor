@@ -1,0 +1,100 @@
+﻿@page "/home/index"
+@page "/home"
+@page "/"
+
+@inject HttpClient Http
+@inject ExamineService _examineService
+@inject ILocalStorageService _localStorage
+@inject ToastService? ToastService
+@inject IAppHelper _appHelper
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JS
+
+
+<Title Text="SDAlliance_软萌"></Title>
+
+
+<div class="">
+    <div class="" style="padding-right: 0; padding-left: 0">
+
+        <Row>
+            <BootstrapBlazor.Components.Carousel Images="@Images" IsFade="true" OnClick="OnClick"></BootstrapBlazor.Components.Carousel>
+        </Row>
+
+        <HomeListCardTip APIUrl="api/home/GetHomeNoticesView" Title="公告" TitleIcon="fa fa-sticky-note-o" Url="/home/search/公告"
+                         UrlIcon="fa fa-search" UrlName="搜索" Type="articles" OnClickUrl="OnClickUrl" />
+
+        <HomeListCardTip APIUrl="api/home/GetHomeArticlesView" Title="文章" TitleIcon="fa fa-newspaper-o" Url="/articles"
+                         UrlIcon="fa fa-newspaper-o" UrlName="文章" Type="articles" OnClickUrl="OnClickUrl" />
+
+        <FriendLinkListView  OnClickUrl="OnClickUrl" />
+    </div>
+</div>
+
+
+@code {
+    public List<SDAllianceWebSite.Shared.Model.Carousel> Model { get; set; } = new List<SDAllianceWebSite.Shared.Model.Carousel>();
+
+    private List<string> Images = new List<string>();
+    private bool isReady = false;
+    public int ItemNum = 4;
+
+    #region 新建标签页
+
+    public async void OpenNewPage(string url)
+    {
+        await JS.InvokeAsync<string>("openNewPage", url);
+    }
+    #endregion
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            //获取主页信息
+            Model = await Http.GetFromJsonAsync<List<SDAllianceWebSite.Shared.Model.Carousel>>(ToolHelper.WebApiPath + "api/home/GetHomeCarouselsView");
+            //序列化轮播图
+            if (Model != null)
+            {
+                Images = new List<string>();
+                foreach (var item in Model)
+                {
+                    Images.Add(item.Image);
+                }
+            }
+
+            isReady = true;
+        }
+        catch (Exception exc)
+        {
+            await ToastService.Error("无法连接到服务器", "请确保网络正常后联系开发人员");
+        }
+    }
+
+    private Task OnClick(string imageUrl)
+    {
+        //查找图片对应的Link
+        foreach (var item in Model)
+        {
+            if (item.Image == imageUrl)
+            {
+                OpenNewPage(item.Link);
+                return Task.CompletedTask;
+            }
+        }
+        return Task.CompletedTask;
+    }
+
+    public async void OnClickUrl(NavigateModel model)
+    {
+        try
+        {
+            NavigationManager.NavigateTo(model.Url, model.Title, model.Icon);
+        }
+        catch
+        {
+            await ToastService.Error("导航失败", "请尝试刷新页面");
+        }
+    }
+}

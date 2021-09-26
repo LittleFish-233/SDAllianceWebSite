@@ -1,0 +1,40 @@
+﻿@inject ToastService? ToastService
+@inject HttpClient Http
+
+
+<div class="card h-100  rounded shadow  bg-opacity p-4" style="border:0px">
+    <div style="height:100%">
+        <Chart OnInitAsync="@OnInit" @ref="LineChart" />
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Url { get; set; }
+
+
+    [NotNull]
+    private Chart? LineChart { get; set; }
+
+    private async Task<ChartDataSource> OnInit()
+    {
+        try
+        {
+            var temp = await Http.GetStringAsync(Url);
+            Newtonsoft.Json.Linq.JObject obj = Newtonsoft.Json.Linq.JObject.Parse(temp);
+            ChartDataSource result = obj.ToObject<ChartDataSource>();
+            if (result == null)
+            {
+                result = new ChartDataSource();
+            }
+            return result;
+        }
+        catch
+        {
+            await ToastService.Error("无法图表数据", "未知异常，请在确保网络正常后联系开发人员");
+            return new ChartDataSource();
+        }
+    }
+
+}
+

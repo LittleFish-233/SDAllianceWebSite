@@ -1,0 +1,17 @@
+﻿<div class="row row-cols-1 row-cols-md-3">
+    <ExaminesPartViewImageTip Name="头像" Path="@Model.PhotoPath"></ExaminesPartViewImageTip>
+    <ExaminesPartViewImageTip Name="空间主图" Path="@Model.BackgroundImage"></ExaminesPartViewImageTip>
+</div>
+<div class="row">
+    <ExaminesPartViewInforTip DispalyName="用户名" DispalyValue="@Model.UserName"></ExaminesPartViewInforTip>
+    <ExaminesPartViewInforTip DispalyName="个性签名" DispalyValue="@Model.PersonalSignature"></ExaminesPartViewInforTip>
+    <ExaminesPartViewInforTip DispalyName="学院" DispalyValue="@Model.Institute"></ExaminesPartViewInforTip>
+    <ExaminesPartViewInforTip DispalyName="班级" DispalyValue="@Model.StudentClass"></ExaminesPartViewInforTip>
+    <ExaminesPartViewInforTip DispalyName="学号" DispalyValue="@Model.StudentId"></ExaminesPartViewInforTip>
+    <ExaminesPartViewInforTip DispalyName="真实姓名" DispalyValue="@Model.StudentName"></ExaminesPartViewInforTip>
+    <ExaminesPartViewInforTip DispalyName="QQ" DispalyValue="@Model.QQ"></ExaminesPartViewInforTip>
+    <ExaminesPartViewInforTip DispalyName="微信" DispalyValue="@Model.WeChat"></ExaminesPartViewInforTip>
+    <ExaminesPartViewInforTip DispalyName="公开的邮箱" DispalyValue="@Model.PublicEmail"></ExaminesPartViewInforTip>
+</div>
+@code { [Parameter]
+            public UserMain Model { get; set; } = new UserMain(); }

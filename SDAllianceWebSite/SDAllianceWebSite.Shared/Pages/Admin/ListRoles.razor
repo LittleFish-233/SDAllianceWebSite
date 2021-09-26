@@ -1,0 +1,13 @@
+﻿@page "/admin/listroles"
+@attribute [Authorize(Roles = "Admin")]
+@inject IAuthService AuthService
+@inject HttpClient Http
+@inject ToastService? ToastService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JS
+
+<Title Text="SDAlliance_软萌"></Title>
+
+@code {
+
+}

@@ -1,0 +1,124 @@
+﻿@page "/account/register/{*ReturnUrl}"
+@page "/account/register/"
+@inject IAuthService AuthService
+@inject NavigationManager NavigationManager
+@inject IAppHelper _appHelper
+@inject ToastService? ToastService
+@inject IJSRuntime JS
+@inject HttpClient Http
+
+
+<Title Text="SDAlliance_软萌"></Title>
+
+
+
+<div class="rounded  rounded shadow  bg-opacity  p-3">
+    <h2 class="mb-4 text-center">注册新用户</h2>
+    <ValidateForm Model="@Model" OnValidSubmit="HandleRegistration" ValidateAllProperties="true" class="form-group col-12 mt-4  mb-0">
+
+        <div class="row">
+            <div class="form-group col-12  col-sm-12">
+                <BootstrapInput @bind-Value="Model.Email" type="email" />
+            </div>
+            <div class="form-group col-12  col-sm-12">
+                <BootstrapInput @bind-Value="Model.Name" />
+            </div>
+            <div class="form-group col-12  col-sm-12">
+                <BootstrapInput @bind-Value="Model.StudentId" />
+            </div>
+            <div class="form-group col-12">
+                <BootstrapInput @bind-Value="Model.Password" type="password" />
+            </div>
+            <div class="form-group col-12">
+                <BootstrapInput @bind-Value="Model.ConfirmPassword" type="password" />
+            </div>
+            <div class="form-group col-12">
+                <a href="/articles/index/225" class="link-primary">软件开发联盟隐私协议</a>
+            </div>
+            <div class="form-group col-12">
+                <div id="robot"></div>
+            </div>
+            <div class="form-group col-6">
+                <Button Color="Color.Primary" ButtonType="ButtonType.Button" IsOutline="true" style="width:100%" @onclick="@(()=>OnLogin())">登录</Button>
+            </div>
+            <div class="form-group col-6">
+                <Button Color="Color.Primary" ButtonType="ButtonType.Submit" IsAsync="true" style="width:100%">注册</Button>
+            </div>
+        </div>
+    </ValidateForm>
+</div>
+
+@code {
+    [Parameter]
+    public string ReturnUrl { get; set; }
+
+    private int widgetId = -1;
+
+    private DotNetObjectReference<Register> objRef;
+
+    private RegisterModel Model = new RegisterModel();
+
+    bool isSuccess = true;
+
+    private async Task HandleRegistration(EditContext context)
+    {
+        if (string.IsNullOrWhiteSpace(Model.Email))
+        {
+            await ToastService.Error("请输入邮箱", "请输入邮箱");
+            return;
+        }
+        await OnChecked("", "");
+    }
+
+    [JSInvokable]
+    public async Task OnChecked(string token, string randstr)
+    {
+        try
+        {
+            Model.Token = token;
+            Model.randstr = randstr;
+
+            var result = await AuthService.Register(Model);
+
+            if (result.Successful)
+            {
+                ToolHelper.UserName = Model.Name;
+                NavigationManager.NavigateTo("/account/ConfirmEmailRegister/" + ReturnUrl, "验证邮箱", "fa-at");
+            }
+            else
+            {
+                await ToastService.Error("注册失败", result.Error);
+                isSuccess = false;
+            }
+        }
+        catch (Exception exc)
+        {
+            await ToastService.Error("注册失败", "请确保网络正常后联系开发人员");
+            isSuccess = false;
+        }
+    }
+
+    [JSInvokable]
+    public Task OnCancel()
+    {
+        isSuccess = false;
+        return Task.CompletedTask;
+    }
+
+
+    private async void OnLogin()
+    {
+        try
+        {
+            NavigationManager.NavigateTo("/account/login/" + ReturnUrl, "登入", "fa fa-sign-in");
+        }
+        catch
+        {
+            await ToastService.Error("尝试导航失败", "请尝试刷新页面");
+        }
+    }
+    public void Dispose()
+    {
+        objRef?.Dispose();
+    }
+}

@@ -1,0 +1,23 @@
+﻿@page "/tests/index/"
+
+
+@inject HttpClient Http
+@inject ExamineService _examineService
+@inject ILocalStorageService _localStorage
+@inject ToastService? ToastService
+@inject IAppHelper _appHelper
+@inject NavigationManager NavigationManager
+
+
+<ImageCropperButton Type="ImageAspectType.None" OnUploadedImage="OnUploaded"></ImageCropperButton>
+<img src="@image"/>
+
+@code {
+    public string image { get; set; }
+
+    public Task OnUploaded(string url)
+    {
+        image = url;
+        return Task.CompletedTask;
+    }
+}

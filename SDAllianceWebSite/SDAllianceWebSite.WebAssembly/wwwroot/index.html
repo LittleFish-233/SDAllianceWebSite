@@ -1,0 +1,107 @@
+﻿<!DOCTYPE html>
+<html lang="ch">
+
+<head>
+    <meta charset="utf-8">
+    <title>SDAlliance_软萌</title>
+    <meta name="keywords" content="软件开发联盟,c#,c++,c语言,java,blazor">
+    <meta name="description" content="软件联盟是一个计算机专业的同学一起学习，共同进步的平台，拥有非常好的学习环境。 有学长学姐讲解知识、指引方向、分享经验、带做项目，各成员相互帮助">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <base href="/">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="icon-512.png">
+    <link rel="manifest" href="manifest.json">
+
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="_content/BootstrapBlazor/css/bootstrap.blazor.bundle.min.css">
+    <link rel="stylesheet" href="_content/BootstrapBlazor/css/motronic.min.css">
+
+
+    <link rel="stylesheet" href="_content/BootstrapBlazor.Markdown/css/bootstrap.blazor.markdown.min.css" />
+    <link rel="stylesheet" href="_content/BootstrapBlazor.Chart/css/bootstrap.blazor.chart.bundle.min.css" />
+
+    <link rel="stylesheet" href="_content/SDAllianceWebSite.Shared/editor.md/css/editormd.min.css" />
+
+    <link rel="stylesheet" href="styles/bundle-css.min.css">
+    <link rel="stylesheet" href="styles/cover-default.min.css">
+
+    <link rel="stylesheet" href="css/wasm.css" />
+
+    <link rel="stylesheet" href="styles/blazor-loading.css">
+
+    <script src="https://ssl.captcha.qq.com/TCaptcha.js"></script>
+
+</head>
+
+<body class="overflow-hidden">
+    <app></app>
+
+    <div class="loader" id="loading">
+        <div class="wasm-loading-image"></div>
+        <div class="wasm-loading-layout">
+            <div class="wasm-loading-shadow rounded  bg-opacity">
+                <img src="_content/SDAllianceWebSite.Shared/images/logo.png" class="wasm-loading-logo">
+                <p class="wasm-loading-font">
+                    软件开发联盟
+                    <i class="fa fa-spinner fa-spin"></i>
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="blazor-error-ui">
+        <environment include="Staging,Production">
+            发生了一个未知错误，请重新加载。如果问题无法解决，可加 Q群 897639506 进行反馈
+        </environment>
+        <a href="" class="reload">重新加载</a>
+        <a class="dismiss"><i class="fa fa-times"></i></a>
+    </div>
+
+    <script src="decode.js"></script>
+    <script src="_framework/blazor.webassembly.js" autostart="false"></script>
+    <script src="_content/BootstrapBlazor/js/bootstrap.blazor.bundle.min.js"></script>
+    <script src="_content/BootstrapBlazor.Markdown/js/bootstrap.blazor.markdown.min.js"></script>
+    <script src="_content/BootstrapBlazor.Chart/js/bootstrap.blazor.chart.bundle.min.js"></script>
+    <script src="_content/BootstrapBlazor.TableExport/js/export.min.js"></script>
+
+    <script src="_content/Chronos.Blazor.Cropper/CropHelper.js"></script>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/vConsole/3.9.0/vconsole.min.js"></script>
+    <!-- <script src="https://cdn.bootcdn.net/ajax/libs/eruda/2.4.1/eruda.min.js"></script>-->
+
+    <script src="_content/SDAllianceWebSite.Shared/editor.md/editormd.min.js"></script>
+
+    <script src="js/common.js"></script>
+    <script src="service-worker-register.js"></script>
+
+    <script src="scripts/bundle-js.min.js"></script>
+    <script src="js/highlight.js/highlight.min.js"></script>
+
+    <script>
+        Blazor.start({
+            loadBootResource: function (type, name, defaultUri, integrity) {
+                if (type !== 'dotnetjs' && location.hostname !== 'localhost') {
+                    return (async function () {
+                        const response = await fetch(defaultUri + '.br', { cache: 'no-cache' });
+                        if (!response.ok) {
+                            throw new Error(response.statusText);
+                        }
+                        const originalResponseBuffer = await response.arrayBuffer();
+                        const originalResponseArray = new Int8Array(originalResponseBuffer);
+                        const decompressedResponseArray = BrotliDecode(originalResponseArray);
+                        const contentType = type ===
+                            'dotnetwasm' ? 'application/wasm' : 'application/octet-stream';
+                        return new Response(decompressedResponseArray,
+                            { headers: { 'content-type': contentType } });
+                    })();
+                }
+            }
+        });
+    </script>
+
+</body>
+
+</html>

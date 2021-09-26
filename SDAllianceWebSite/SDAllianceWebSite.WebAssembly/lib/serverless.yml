@@ -1,0 +1,10 @@
+# serverless.yml
+blazor-wasm: 
+  component: "@serverless/tencent-website"
+  inputs: 
+    code: 
+      src: ./wwwroot # Upload static files
+      index: index.html
+      error: index.html
+    region: ap-guangzhou
+    bucketName: blazor-bucket

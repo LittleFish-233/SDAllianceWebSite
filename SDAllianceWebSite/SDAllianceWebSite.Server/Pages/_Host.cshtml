@@ -1,0 +1,96 @@
+﻿@page "/"
+@namespace SDAllianceWebSite.Server.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@using SDAllianceWebSite.Shared
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SDAlliance_软萌</title>
+    <meta name="keywords" content="软件开发联盟,c#,c++,c语言,java,blazor">
+    <meta name="description" content="软件联盟是一个计算机专业的同学一起学习，共同进步的平台，拥有非常好的学习环境。 有学长学姐讲解知识、指引方向、分享经验、带做项目，各成员相互帮助。">
+
+    <base href="~/" />
+
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//app.ruanmeng.love/_content/BootstrapBlazor/css/bootstrap.blazor.bundle.min.css">
+    <link rel="stylesheet" href="//app.ruanmeng.love/_content/BootstrapBlazor/css/motronic.min.css">
+
+    <link rel="stylesheet" href="//app.ruanmeng.love/_content/BootstrapBlazor.Markdown/css/bootstrap.blazor.markdown.min.css" />
+    <link rel="stylesheet" href="//app.ruanmeng.love/_content/BootstrapBlazor.Chart/css/bootstrap.blazor.chart.bundle.min.css" />
+
+    <link rel="stylesheet" href="//app.ruanmeng.love/_content/SDAllianceWebSite.Shared/editor.md/css/editormd.min.css" />
+
+    <link rel="stylesheet" href="//app.ruanmeng.love/styles/bundle-css.min.css">
+    <link rel="stylesheet" href="//app.ruanmeng.love/styles/cover-default.min.css">
+
+    <script src="https://ssl.captcha.qq.com/TCaptcha.js"></script>
+
+    <style>
+        .d-ssr {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <app>
+        <component type="typeof(App)" render-mode="ServerPrerendered" />
+    </app>
+
+    <div id="blazor-error-ui">
+        <environment include="Staging,Production">
+            发生了一个未知错误，请重新加载。如果问题无法解决，可加 Q群 897639506 进行反馈
+        </environment>
+        <environment include="Development">
+            发生了一个未知错误，请重新加载。如果问题无法解决，可加 Q群 897639506 进行反馈
+        </environment>
+        <a href="" class="reload">重新加载</a>
+        <a class="dismiss">🗙</a>
+    </div>
+
+    <script src="//app.ruanmeng.love/_framework/blazor.server.5.0.js"></script>
+    <!-- <script src="/_framework/blazor.server.js"></script>-->
+    <script src="//app.ruanmeng.love/_content/BootstrapBlazor/js/bootstrap.blazor.bundle.min.js"></script>
+    <script src="//app.ruanmeng.love/_content/BootstrapBlazor.Markdown/js/bootstrap.blazor.markdown.min.js"></script>
+    <script src="//app.ruanmeng.love/_content/BootstrapBlazor.Chart/js/bootstrap.blazor.chart.bundle.min.js"></script>
+    <script src="//app.ruanmeng.love/_content/BootstrapBlazor.TableExport/js/export.min.js"></script>
+    <script src="//app.ruanmeng.love/_content/Chronos.Blazor.Cropper/CropHelper.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/eruda/2.4.1/eruda.min.js"></script>
+    <!-- <script src="https://cdn.bootcdn.net/ajax/libs/eruda/2.4.1/eruda.min.js"></script>-->
+    <script src="https://unpkg.com/cos-js-sdk-v5/dist/cos-js-sdk-v5.min.js"></script>
+
+    <script src="/js/tools-inline.js"></script>
+    <!-- <script src="//app.ruanmeng.love/scripts/bundle-js.min.js"></script>-->
+    <script src="//app.ruanmeng.love/js/highlight.js/highlight.min.js"></script>
+
+    <script src="//app.ruanmeng.love/_content/SDAllianceWebSite.Shared/editor.md/editormd.min.js"></script>
+
+    <script>
+        // Wait until a 'reload' button appears
+        new MutationObserver((mutations, observer) => {
+            if (document.querySelector('#components-reconnect-modal')) {
+                if (document.querySelector('#components-reconnect-modal h5 a')) {
+                    // Now every 10 seconds, see if the server appears to be back, and if so, reload
+                    async function attemptReload() {
+                        await fetch(''); // Check the server really is back
+                        location.reload();
+                    }
+                    observer.disconnect();
+                    attemptReload();
+                    setInterval(attemptReload, 1000);
+                }
+                else {
+                    //没有重新加载按钮 则隐藏提示
+                    $("#components-reconnect-modal").remove();
+                }
+
+            }
+        }).observe(document.body, { childList: true, subtree: true });
+    </script>
+</body>
+    </html>

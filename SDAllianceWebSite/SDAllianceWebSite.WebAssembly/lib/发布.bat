@@ -1,0 +1,3 @@
+serverless --debug
+pause
+pause

@@ -1,0 +1,242 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..</DockerfileContext>
+    <DockerComposeProjectPath>..\..\docker-compose.dcproj</DockerComposeProjectPath>
+    <StartupObject>SDAllianceWebSite.Server.Program</StartupObject>
+    <UserSecretsId>79a3edd0-2092-40a2-a04d-dcb46d5ca9ed</UserSecretsId>
+
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\libs\src\**" />
+    <Content Remove="wwwroot\libs\src\**" />
+    <EmbeddedResource Remove="wwwroot\libs\src\**" />
+    <None Remove="wwwroot\libs\src\**" />
+    <TypeScriptCompile Remove="wwwroot\libs\src\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\favicon.png" />
+    <Content Remove="wwwroot\icon-512.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\favicon.png" />
+    <None Include="wwwroot\icon-512.png" />
+    <None Include="wwwroot\js\highlight.js\highlight.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\1c.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\abnf.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\accesslog.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\actionscript.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\ada.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\angelscript.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\apache.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\applescript.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\arcade.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\arduino.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\armasm.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\asciidoc.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\aspectj.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\autohotkey.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\autoit.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\avrasm.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\awk.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\axapta.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\bash.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\basic.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\bnf.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\brainfuck.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\c-like.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\c.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\cal.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\capnproto.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\ceylon.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\clean.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\clojure-repl.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\clojure.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\cmake.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\coffeescript.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\coq.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\cos.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\cpp.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\crmsh.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\crystal.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\csharp.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\csp.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\css.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\d.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\dart.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\delphi.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\diff.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\django.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\dns.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\dockerfile.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\dos.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\dsconfig.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\dts.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\dust.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\ebnf.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\elixir.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\elm.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\erb.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\erlang-repl.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\erlang.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\excel.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\fix.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\flix.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\fortran.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\fsharp.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\gams.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\gauss.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\gcode.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\gherkin.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\glsl.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\gml.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\go.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\golo.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\gradle.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\groovy.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\haml.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\handlebars.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\haskell.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\haxe.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\hsp.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\htmlbars.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\http.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\hy.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\inform7.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\ini.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\irpf90.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\isbl.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\java.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\javascript.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\jboss-cli.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\json.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\julia-repl.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\julia.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\kotlin.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\lasso.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\latex.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\ldif.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\leaf.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\less.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\lisp.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\livecodeserver.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\livescript.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\llvm.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\lsl.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\lua.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\makefile.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\markdown.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\mathematica.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\matlab.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\maxima.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\mel.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\mercury.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\mipsasm.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\mizar.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\mojolicious.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\monkey.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\moonscript.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\n1ql.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\nginx.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\nim.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\nix.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\node-repl.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\nsis.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\objectivec.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\ocaml.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\openscad.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\oxygene.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\parser3.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\perl.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\pf.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\pgsql.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\php-template.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\php.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\plaintext.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\pony.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\powershell.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\processing.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\profile.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\prolog.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\properties.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\protobuf.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\puppet.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\purebasic.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\python-repl.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\python.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\q.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\qml.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\r.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\reasonml.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\rib.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\roboconf.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\routeros.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\rsl.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\ruby.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\ruleslanguage.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\rust.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\sas.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\scala.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\scheme.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\scilab.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\scss.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\shell.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\smali.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\smalltalk.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\sml.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\sqf.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\sql.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\sql_more.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\stan.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\stata.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\step21.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\stylus.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\subunit.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\swift.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\taggerscript.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\tap.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\tcl.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\thrift.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\tp.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\twig.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\typescript.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\vala.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\vbnet.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\vbscript-html.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\vbscript.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\verilog.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\vhdl.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\vim.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\x86asm.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\xl.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\xml.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\xquery.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\yaml.min.js" />
+    <None Include="wwwroot\js\highlight.js\languages\zephir.min.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SDAllianceWebSite.Shared\SDAllianceWebSite.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\favicon.ico">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

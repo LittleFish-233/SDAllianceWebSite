@@ -1,0 +1,86 @@
+﻿@using System.Net.Http
+@using System.Net.Http.Json
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.JSInterop
+@using SDAllianceWebSite
+@using SDAllianceWebSite.Shared
+@using BootstrapBlazor.Components
+
+@using Microsoft.AspNetCore.Components.Authorization
+@using SDAllianceWebSite.Shared.Service
+
+@using System.Net.Http.Headers
+
+@using Microsoft.AspNetCore.Authorization
+@using System.Threading
+@using Blazored.LocalStorage;
+
+@using Microsoft.AspNetCore.Components;
+@using System.Collections.Generic;
+@using System.Diagnostics.CodeAnalysis;
+@using System.Threading.Tasks;
+
+@using SDAllianceWebSite.Shared.Helper;
+@using SDAllianceWebSite.Shared.Model
+@using SDAllianceWebSite.Shared.ViewModel
+@using SDAllianceWebSite.Shared.Application.Helper
+@using SDAllianceWebSite.Shared.Application.Examines
+@using SDAllianceWebSite.Shared.ViewModel.Articles
+@using SDAllianceWebSite.Shared.ViewModel.Home
+@using SDAllianceWebSite.Shared.ViewModel.Space
+@using SDAllianceWebSite.Shared.Application.Dtos
+@using SDAllianceWebSite.Shared.ViewModel.Admin
+@using SDAllianceWebSite.Shared.Application.Roles
+@using SDAllianceWebSite.Shared.Application.Roles.Dtos
+@using SDAllianceWebSite.Shared.Application.Users.Dtos
+@using SDAllianceWebSite.Shared.Application.Search.Dtos
+@using SDAllianceWebSite.Shared.Application.Articles.Dtos
+@using SDAllianceWebSite.Shared.Application.Examines.Dtos
+@using SDAllianceWebSite.Shared.Model.ExamineModel
+@using SDAllianceWebSite.Shared.ViewModel.Entries
+@using SDAllianceWebSite.Shared.Component.Admin
+@using SDAllianceWebSite.Shared.Component.Admin.Examines
+@using SDAllianceWebSite.Shared.Component.Space
+@using SDAllianceWebSite.Shared.Component.Space.Messages
+@using SDAllianceWebSite.Shared.Component.Others
+@using SDAllianceWebSite.Shared.Component.Errors
+@using SDAllianceWebSite.Shared.ViewModel.Coments
+@using SDAllianceWebSite.Shared.Component.Comments
+@using SDAllianceWebSite.Shared.Component.Users
+@using SDAllianceWebSite.Shared.Component.Admin.ImportDatas
+@using SDAllianceWebSite.Shared.ViewModel.Search
+@using SDAllianceWebSite.Shared.Component.Search
+@using SDAllianceWebSite.Shared.Component.Articles
+@using SDAllianceWebSite.Shared.ViewModel.Accounts
+@using SDAllianceWebSite.Shared.ViewModel.Theme
+@using SDAllianceWebSite.Shared.Component.Home
+@using SDAllianceWebSite.Shared.ExamineModel
+@using SDAllianceWebSite.Shared.ViewModel.Batch
+@using SDAllianceWebSite.Shared.ViewModel.TimedTasks
+@using SDAllianceWebSite.Shared.ViewModel.BackUpArchives
+@using SDAllianceWebSite.Shared.Component.Others.CalendarHeatMap
+@using SDAllianceWebSite.Shared.ViewModel.Files
+@using SDAllianceWebSite.Shared.Component.Admin.Images
+@using SDAllianceWebSite.Shared.Component.Accounts
+@using SDAllianceWebSite.Shared.Component.Others.Images
+@using SDAllianceWebSite.Shared.ViewModel.Favorites
+@using SDAllianceWebSite.Shared.Component.Space.Favorites
+@using SDAllianceWebSite.Shared.Component.Home.About
+
+
+@using Microsoft.AspNetCore.Identity;
+@using System.Collections.Concurrent;
+@using System.Linq;
+@using Microsoft.Extensions.Localization;
+@using System.ComponentModel;
+@using System.ComponentModel.DataAnnotations;
+@using System.Globalization;
+@using SDAllianceWebSite.Shared.Shared
+@using Blazor.Cropper
+@using System.IO
+
+@using System.Text.Json;
+@using System.Text.Json.Serialization;

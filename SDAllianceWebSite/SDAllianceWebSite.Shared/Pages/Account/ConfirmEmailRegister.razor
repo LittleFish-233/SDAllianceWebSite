@@ -1,0 +1,73 @@
+﻿@page "/account/ConfirmEmailRegister/{*ReturnUrl}"
+@inject IAuthService AuthService
+@inject NavigationManager NavigationManager
+@inject IAppHelper _appHelper
+@inject ToastService? ToastService
+
+@inject IAuthService AuthService
+
+<Title Text="SDAlliance_软萌"></Title>
+
+<div class="rounded  rounded shadow  bg-opacity  p-3">
+    <h3 class="mb-3 text-center">验证电子邮箱</h3>
+    <p class="mb-4" style=" font-size: initial;">我们已经向你的电子邮箱发送了一封验证邮件，请在下方填写其中的验证码。如果没有在收件箱找到邮件，请检查垃圾箱</p>
+    <ValidateForm Model="@Model" OnValidSubmit="HandleConfirm" ValidateAllProperties="true" class="form-group mt-4  mb-0">
+
+        <div class="row">
+            <div class="form-group col">
+                <BootstrapInput @bind-Value="Model.NumToken" />
+            </div>
+            <div class="form-group col-auto" style=" display: flex; align-items: flex-end;">
+                <PostVerificationCodeTip UserName="@ToolHelper.UserName" IsFrist="false"></PostVerificationCodeTip>
+            </div>
+            <div class="form-group col-12">
+                <Button Color="Color.Primary" ButtonType="ButtonType.Submit" IsAsync="true" style="width:100%">验证</Button>
+            </div>
+
+        </div>
+    </ValidateForm>
+
+</div>
+@code {
+
+    [Parameter]
+    public string ReturnUrl { get; set; }
+
+    private ConfirmEmailRegisterModel Model = new ConfirmEmailRegisterModel();
+
+
+    private async Task HandleConfirm(EditContext context)
+    {
+
+        try
+        {
+            Model.UserName = ToolHelper.UserName;
+            var result = await AuthService.ConfirmEmailRegister(Model);
+
+            if (result.Successful)
+            {
+                if(await AuthService.Login(result.Token)==false)
+                {
+                    await ToastService.Success("出现一个错误", "验证邮件成功，但是尝试登入失败");
+                }
+                //保存令牌
+                ToolHelper.LoginKey = result.LoginKey;
+
+                await ToastService.Success("验证邮箱成功", "验证邮箱成功");
+                //NavigationManager.NavigateTo("/account/ChooseVerificationMethod/" + (string.IsNullOrWhiteSpace(URL)?"": ToolHelper.Base64Encode(URL)));
+                NavigationManager.NavigateTo(string.IsNullOrWhiteSpace(ReturnUrl) ? "/" : ToolHelper.Base64DecodeUrl(ReturnUrl));
+            }
+            else
+            {
+                await ToastService.Error("验证邮箱失败", result.Error);
+
+            }
+        }
+        catch
+        {
+            await ToastService.Error("验证邮箱失败", "验证过程中发色未知错误，请确保网络正常后联系管理员");
+        }
+
+    }
+
+}

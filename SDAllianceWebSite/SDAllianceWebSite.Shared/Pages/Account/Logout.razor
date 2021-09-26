@@ -1,0 +1,29 @@
+﻿@page "/account/logout"
+@inject IAuthService AuthService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JS
+
+
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authenticationStateTask;
+        var user = authState.User;
+        if(user.Identity.IsAuthenticated)
+        {
+            await AuthService.Logout();
+
+            NavigationManager.NavigateTo("/account/login");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/home/index");
+
+
+        }
+    }
+ }
